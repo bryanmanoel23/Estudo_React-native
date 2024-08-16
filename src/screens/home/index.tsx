@@ -1,24 +1,28 @@
 import { Text, View, TextInput, TouchableOpacity, FlatList, Alert} from "react-native";
 import { styles } from "./main";
 import { Participant } from "../../components/Participant";
+import { useState } from "react";
 
 export default function Home(){
 
-  const participants = ['Bryan', 'Társio', 'Deivid', 'Bruno', 'Gabriel', 'Elessandro', 'Tárcila', 'Dalma']
+  const [ participants, setParticipants ] = useState<string[]>([])
+  const [ participantName, setParticipantName ] = useState('')
 
   function handleParticipantClick(){
-    if(participants.includes('Bryan')){
+    if(participants.includes(participantName)){
       return Alert.alert('Participante existe', 'Já existe um participante cadastrado com esse nome.')
     }
 
-    console.log('Cadastrado com sucesso !')
+    setParticipants(prevState => [...prevState, participantName])
+    setParticipantName('')
+
   }
 
   function handleRemove(name: string){
    Alert.alert('Remover Participante', `Deseja remover ${name} ?`, [
     {
       text: 'Sim',
-      onPress: ()=>Alert.alert('Deletado !')
+      onPress: ()=> setParticipants(prevState => prevState.filter(prevState => prevState !== name))
     },
     {
       text: 'Não',
@@ -44,6 +48,8 @@ export default function Home(){
     <TextInput style={styles.input}
     placeholder= "Nome do participante"
     placeholderTextColor= "#6b6b6b"
+    onChangeText={e => setParticipantName(e)}
+    value={participantName}
     />
 
     <TouchableOpacity style={styles.inputStyle} onPress={handleParticipantClick} >
